@@ -1,8 +1,8 @@
-from config import *
 from fastapi import FastAPI
 
 from .categories import categories_router
 from .clothes import clothes_router
+from .config import *
 
 Base.metadata.create_all(bind=engine)
 app = FastAPI()
