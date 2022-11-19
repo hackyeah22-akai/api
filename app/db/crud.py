@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from . import models, schemas
 
 
-def get_cloths(db: Session):
+def get_clothes(db: Session):
     return db.query(models.Cloth)
 
 
