@@ -1,17 +1,8 @@
 from fastapi import APIRouter
 
-from ..db import schemas
-from ..db.database import SessionLocal
+from ..db import crud, get_db, schemas
 
 router = APIRouter(prefix="/clothes")
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 @router.post("/category", response_model=schemas.Category)

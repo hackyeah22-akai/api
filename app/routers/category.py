@@ -1,22 +1,14 @@
-from fastapi import Depends, APIRouter
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from ..db import schemas, crud
+from ..db import crud, get_db, schemas
 from ..db.database import SessionLocal
 
 router = APIRouter(prefix="/category")
 
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
 @router.post("", response_model=schemas.Category)
-def create_user(category: schemas.CategoryCreate, db: Session = Depends(get_db)):
+def create_user(category: schemas.CategoryCreate,
+                db: Session = Depends(get_db)):
     return crud.create_category(db, category)
 
 
