@@ -1,5 +1,5 @@
 __all__ = [
-    "crud", "database", "models", "schemas"
+    "crud", "database", "models", "schemas", "dbconnector"
 ]
 
 from .crud import create_category, create_cloth, get_categories, get_clothes
