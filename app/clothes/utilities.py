@@ -1,5 +1,4 @@
 import datetime
-from typing import Tuple
 
 # spring, summer, autumm, winter: [0: 3]
 TODAY = datetime.date.today()
