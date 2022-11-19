@@ -28,7 +28,7 @@ class ClothCreate(ClothBase):
 
 class Cloth(ClothBase):
     id: int
-    user_id: int
+    user: str
     category: Category
 
     class Config:

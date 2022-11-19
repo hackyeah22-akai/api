@@ -1,23 +1,22 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
 from ..db import crud, get_db, schemas
 
 router = APIRouter(prefix="/clothes")
 
 
-@router.post("/category", response_model=schemas.Category)
-def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):  # uwaga typ Session nie SessionLocal
-    db_user = crud.get_user_by_email(db, email=user.email)
-    if db_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    return crud.create_user(db=db, category=user)
+@router.post("", response_model=schemas.Cloth)
+async def create_cloth(cloth: schemas.ClothCreate,
+                       db: Session = Depends(get_db)):
+    return crud.create_cloth(db, cloth)
 
 
-@router.get("/{cloth_id}")
-async def read_item(item_id: str):
-    return {}
+@router.get("", response_model=list[schemas.Cloth])
+async def read_clothes(db: Session = Depends(get_db)):
+    return crud.get_clothes(db)
 
 
-@router.put("/{item_id}")
-async def update_item(item_id: str):
-    return {}
+@router.get("/{cloth_id}", response_model=schemas.Cloth)
+async def read_cloth(cloth_id: int, db: Session = Depends(get_db)):
+    return crud.get_cloth(cloth_id, db)
