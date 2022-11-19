@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from ..db import crud, get_db, schemas
+from ..db import crud, schemas
+from ..db.dbconnector import get_db
 
 router = APIRouter(prefix="/category")
 
