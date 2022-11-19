@@ -1,10 +1,7 @@
-from .database import Base
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-
-class Cloth(Base):
-    id: int
+from .database import Base
 
 
 class User(Base):
@@ -16,6 +13,13 @@ class User(Base):
     is_active = Column(Boolean, default=True)
 
     items = relationship("Item", back_populates="owner")
+
+
+class Cloth(Base):
+    __tablename__ = "clothes"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(ForeignKey(User), nullable=False)
+    name = Column(String, nullable=False)
 
 
 class Item(Base):
