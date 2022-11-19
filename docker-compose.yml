@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  postgres_wardrobbers:
+    container_name: postgres_wardrobbers
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres-wardrobbers:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres-wardrobbers:
