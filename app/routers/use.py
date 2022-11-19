@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from ..db import crud, get_db, schemas
 
-router = APIRouter(prefix="/clothes")
+router = APIRouter(prefix="/use")
 
 
 @router.post("", response_model=schemas.Cloth)

@@ -8,15 +8,16 @@ router = APIRouter(prefix="/category")
 
 @router.post("", response_model=schemas.Category)
 async def create_category(category: schemas.CategoryCreate,
-                          db: Session = Depends(get_db)):
-    return crud.create_category(db, category)
+                          database: Session = Depends(get_db)):
+    return crud.create_category(database, category)
 
 
 @router.get("", response_model=list[schemas.Category])
-async def read_categories(db: Session = Depends(get_db)):
-    return crud.get_categories(db)
+async def read_categories(database: Session = Depends(get_db)):
+    return crud.get_categories(database)
 
 
 @router.get("/{category_id}", response_model=schemas.Category)
-async def read_category(category_id: int, db: Session = Depends(get_db)):
-    return crud.get_category(category_id, db)
+async def read_category(category_id: int,
+                        database: Session = Depends(get_db)):
+    return crud.get_category(category_id, database)
