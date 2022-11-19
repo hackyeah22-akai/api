@@ -18,5 +18,5 @@ async def read_categories(db: Session = Depends(get_db)):
 
 
 @router.get("/{category_id}", response_model=schemas.Category)
-async def read_categories(category_id: int, db: Session = Depends(get_db)):
+async def read_category(category_id: int, db: Session = Depends(get_db)):
     return crud.get_category(category_id, db)
