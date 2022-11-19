@@ -26,8 +26,8 @@ class Cloth(Base):
     __tablename__ = "clothes"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(ForeignKey(User), nullable=False)
-    category_id = Column(ForeignKey(Category), nullable=False)
+    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    category_id = Column(Integer, ForeignKey("category.id"), nullable=False)
     name = Column(String, nullable=False)
 
 
@@ -38,6 +38,5 @@ class Item(Base):
     title = Column(String, index=True)
     description = Column(String, index=True)
     owner_id = Column(Integer, ForeignKey("users.id"))
-
     owner = relationship("User",
                          back_populates="items")  # how it knows that there is only single User but multiple Items
