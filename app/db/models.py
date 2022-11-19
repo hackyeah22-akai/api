@@ -11,14 +11,23 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     hashed_password = Column(String)
     is_active = Column(Boolean, default=True)
-
     items = relationship("Item", back_populates="owner")
+
+
+class Category(Base):
+    __tablename__ = "categories"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    savings = Column(String, nullable=False)
 
 
 class Cloth(Base):
     __tablename__ = "clothes"
+
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(ForeignKey(User), nullable=False)
+    category_id = Column(ForeignKey(Category), nullable=False)
     name = Column(String, nullable=False)
 
 
