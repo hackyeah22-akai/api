@@ -1,8 +1,6 @@
 from fastapi import FastAPI
+from .routers import clothes
 
 app = FastAPI()
 
-
-@app.get("/items/{item_id}")
-async def read_item(item_id):
-    return {"item_id": item_id}
+app.include_router(clothes.router, prefix="/api/v1")
