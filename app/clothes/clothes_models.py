@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Date
+from sqlalchemy import Column, ForeignKey, Integer, String, Date, Boolean
 from sqlalchemy.orm import relationship
 
 from app.config import Base
@@ -13,6 +13,10 @@ class Cloth(Base):
     name = Column(String, nullable=False)
     photo = Column(String, nullable=False)
     created_at = Column(Date, nullable=False)
+    is_winter = Column(Boolean, nullable=False)
+    is_spring = Column(Boolean, nullable=False)
+    is_summer = Column(Boolean, nullable=False)
+    is_autumn = Column(Boolean, nullable=False)
     category = relationship("Category")
 
 

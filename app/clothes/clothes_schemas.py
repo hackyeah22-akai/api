@@ -8,6 +8,10 @@ from ..categories.categories_schemas import Category
 class ClothBase(BaseModel):
     name: str
     photo: str
+    is_winter: bool = False
+    is_spring: bool = False
+    is_summer: bool = False
+    is_autumn: bool = False
 
 
 class ClothCreate(ClothBase):

@@ -24,6 +24,13 @@ async def read_clothes(db: Session = Depends(get_db)):
     return clothes_service.get_clothes(db)
 
 
+@router.get("/unused",
+            response_model=list,
+            tags=TAGS)
+async def get_unused_clothes(db: Session = Depends(get_db)):
+    return clothes_service.get_unused_clothes(db)
+
+
 @router.get("/{cloth_id}",
             response_model=clothes_schemas.Cloth,
             tags=TAGS)

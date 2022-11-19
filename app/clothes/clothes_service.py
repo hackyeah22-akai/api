@@ -1,8 +1,10 @@
 import datetime
 
+from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from . import clothes_models, clothes_schemas
+from .utilities import is_used
 
 
 def get_clothes(db: Session):
@@ -27,3 +29,25 @@ def add_use(db: Session, use: clothes_schemas.UseCreate):
     db.commit()
     db.refresh(db_use)
     return db_use
+
+
+def get_unused_clothes(db: Session):
+    sql = text(
+        """select c.id, coalesce(u.date, c.created_at) as last_used, c.is_spring, c.is_summer, c.is_autumn, c.is_winter from clothes c left join uses u on c.id = u.cloth_id""")
+    cloth_ids = []
+    result = db.execute(sql)
+    for row in result:
+        cloth_id = row.id
+        last_used = row.last_used
+        seasons = []
+        if row.is_spring:
+            seasons.append(0)
+        if row.is_summer:
+            seasons.append(1)
+        if row.is_autumn:
+            seasons.append(2)
+        if row.is_winter:
+            seasons.append(3)
+        if is_used(last_used, seasons):
+            cloth_ids.append(cloth_id)
+    return db.query(clothes_models.Cloth).filter(~clothes_models.Cloth.id.in_(cloth_ids)).all()
