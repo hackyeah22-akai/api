@@ -12,6 +12,7 @@ class User(Base):
     hashed_password = Column(String)
     is_active = Column(Boolean, default=True)
     items = relationship("Item", back_populates="owner")
+    clothes = relationship("Cloth", back_populates="clothes")
 
 
 class Category(Base):
@@ -20,6 +21,7 @@ class Category(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
     savings = Column(String, nullable=False)
+    clothes = relationship("Cloth", back_populates="clothes")
 
 
 class Cloth(Base):
