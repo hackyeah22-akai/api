@@ -26,4 +26,5 @@ class Cloth(Base):
     user = Column(Integer, ForeignKey("users.email"), nullable=False)
     category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)
     name = Column(String, nullable=False)
+    photo = Column(String, nullable=False)
     category = relationship("Category")

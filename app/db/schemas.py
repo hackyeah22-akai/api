@@ -19,11 +19,11 @@ class Category(CategoryBase):
 
 class ClothBase(BaseModel):
     name: str
+    photo: str
 
 
 class ClothCreate(ClothBase):
     category_id: int
-    pass
 
 
 class Cloth(ClothBase):
