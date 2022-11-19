@@ -1,3 +1,5 @@
+import datetime
+
 from sqlalchemy.orm import Session
 
 from . import clothes_models, clothes_schemas
@@ -12,7 +14,7 @@ def get_cloth(cloth_id: int, db: Session):
 
 
 def create_cloth(db: Session, cloth: clothes_schemas.ClothCreate):
-    db_cloth = clothes_models.Cloth(**cloth.dict(), user="test@test.com")
+    db_cloth = clothes_models.Cloth(**cloth.dict(), user="test@test.com", created_at=datetime.date.today())
     db.add(db_cloth)
     db.commit()
     db.refresh(db_cloth)

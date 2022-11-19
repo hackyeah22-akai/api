@@ -12,6 +12,7 @@ class Cloth(Base):
     category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)
     name = Column(String, nullable=False)
     photo = Column(String, nullable=False)
+    created_at = Column(Date, nullable=False)
     category = relationship("Category")
 
 
