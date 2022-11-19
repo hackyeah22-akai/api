@@ -7,7 +7,7 @@ from ..db.database import SessionLocal
 router = APIRouter(prefix="/category")
 
 @router.post("", response_model=schemas.Category)
-def create_user(category: schemas.CategoryCreate,
+async def create_user(category: schemas.CategoryCreate,
                 db: Session = Depends(get_db)):
     return crud.create_category(db, category)
 
