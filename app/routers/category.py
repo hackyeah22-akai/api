@@ -12,11 +12,6 @@ async def create_user(category: schemas.CategoryCreate,
     return crud.create_category(db, category)
 
 
-@router.get("/{category_id}")
-async def read_item(item_id: str):
-    return {}
-
-
-@router.put("/{item_id}")
-async def update_item(item_id: str):
-    return {}
+@router.get("", response_model=schemas.Category)
+async def read_category(db: Session = Depends(get_db)):
+    return crud.get_categories(db)

@@ -13,6 +13,9 @@ class CategoryCreate(CategoryBase):
 class Category(CategoryBase):
     id: int
 
+    class Config:
+        orm_mode = True
+
 
 class ClothBase(BaseModel):
     category_id: int
