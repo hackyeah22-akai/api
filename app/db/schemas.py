@@ -18,11 +18,11 @@ class Category(CategoryBase):
 
 
 class ClothBase(BaseModel):
-    category_id: int
     name: str
 
 
 class ClothCreate(ClothBase):
+    category_id: int
     pass
 
 
