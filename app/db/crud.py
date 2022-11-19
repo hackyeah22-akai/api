@@ -16,7 +16,11 @@ def create_cloth(db: Session, cloth: schemas.ClothCreate):
 
 
 def get_categories(db: Session):
-    return db.query(models.Category)
+    return db.query(models.Category).all()
+
+
+def get_category(category_id: int, db: Session):
+    return db.query(models.Category).filter(models.Category.id == category_id).first()
 
 
 def create_category(db: Session, category: schemas.CategoryCreate):
