@@ -17,3 +17,11 @@ def create_cloth(db: Session, cloth: clothes_schemas.ClothCreate):
     db.commit()
     db.refresh(db_cloth)
     return db_cloth
+
+
+def add_use(db: Session, use: clothes_schemas.UseCreate):
+    db_use = clothes_models.Use(**use.dict())
+    db.add(db_use)
+    db.commit()
+    db.refresh(db_use)
+    return db_use
