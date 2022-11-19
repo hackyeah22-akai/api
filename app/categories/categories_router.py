@@ -1,24 +1,24 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from ..db import crud, schemas
-from ..db.dbconnector import get_db
+from app.config import get_db
+from . import categories_schemas, categories_service
 
 router = APIRouter(prefix="/category")
 
 
-@router.post("", response_model=schemas.Category)
-async def create_category(category: schemas.CategoryCreate,
+@router.post("", response_model=categories_schemas.Category)
+async def create_category(category: categories_schemas.CategoryCreate,
                           database: Session = Depends(get_db)):
-    return crud.create_category(database, category)
+    return categories_service.create_category(database, category)
 
 
-@router.get("", response_model=list[schemas.Category])
+@router.get("", response_model=list[categories_schemas.Category])
 async def read_categories(database: Session = Depends(get_db)):
-    return crud.get_categories(database)
+    return categories_service.get_categories(database)
 
 
-@router.get("/{category_id}", response_model=schemas.Category)
+@router.get("/{category_id}", response_model=categories_schemas.Category)
 async def read_category(category_id: int,
                         database: Session = Depends(get_db)):
-    return crud.get_category(category_id, database)
+    return categories_service.get_category(category_id, database)

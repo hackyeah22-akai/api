@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
+from app.config import get_db
 from . import clothes_service, clothes_schemas
-from ..db.dbconnector import get_db
 
 router = APIRouter(prefix="/clothes")
 

@@ -2,7 +2,7 @@ import datetime
 
 from pydantic import BaseModel
 
-from app.db.schemas import Category
+from ..categories.categories_schemas import Category
 
 
 class ClothBase(BaseModel):

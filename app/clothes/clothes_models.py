@@ -1,14 +1,14 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, Date
 from sqlalchemy.orm import relationship
 
-from ..db.database import Base
+from app.config import Base
 
 
 class Cloth(Base):
     __tablename__ = "clothes"
 
     id = Column(Integer, primary_key=True, index=True)
-    user = Column(Integer, ForeignKey("users.email"), nullable=False)
+    user = Column(String, ForeignKey("users.email"), nullable=False)
     category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)
     name = Column(String, nullable=False)
     photo = Column(String, nullable=False)
