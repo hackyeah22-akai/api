@@ -3,6 +3,7 @@ __all__ = [
 ]
 
 from .crud import create_category, create_cloth, get_categories, get_cloths
+from .database import Base, engine
 from .dbconnector import get_db
 
 # from .models import Category, Cloth, Item, User
