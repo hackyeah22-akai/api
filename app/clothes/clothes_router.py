@@ -51,9 +51,9 @@ async def add_cloth_use(cloth_id: int, db: Session = Depends(get_db)):
     clothes_service.add_use(db, use)
 
 
-@router.post("/images/{cloth_id}", status_code=status.HTTP_201_CREATED, tags=TAGS)
-async def upload_file(cloth_id: int, s3: BaseClient = Depends(s3_auth), file_obj: UploadFile = File(...)):
-    upload_obj = upload_file_to_bucket(s3_client=s3, file_obj=file_obj.file, object_name=str(cloth_id))
+@router.post("/images", status_code=status.HTTP_201_CREATED, tags=TAGS)
+async def upload_file(s3: BaseClient = Depends(s3_auth), file_obj: UploadFile = File(...)):
+    upload_obj = upload_file_to_bucket(s3_client=s3, file_obj=file_obj.file, object_name=file_obj.filename)
 
     if upload_obj != '':
         return JSONResponse(content={'url': upload_obj},
