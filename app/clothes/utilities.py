@@ -32,9 +32,10 @@ SEASONS = tuple(map(date_range_season, SEASON_RANGES))
 def is_used(cloth_date: datetime.date, c_seasons) -> bool:
     all_days = 0
     for i in c_seasons:
-        if (l := SEASONS[i][0]) < cloth_date \
-        and cloth_date < (r := SEASONS[i][1]):
-            all_days += (r-cloth_date).days
+        left = SEASONS[i][0]
+        right = SEASONS[i][1]
+        if (left < cloth_date < right):
+            all_days += (right-cloth_date).days
         else:
-            all_days += (r-l).days
+            all_days += (right-left).days
     return True if all_days <= 90 else False
