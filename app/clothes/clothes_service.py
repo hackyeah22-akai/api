@@ -85,3 +85,11 @@ def get_unused_clothes(db: Session, authorization: str):
         if not is_used(cloth.last_used if cloth.last_used is not None else cloth.created_at, seasons):
             unused_clothes.append(cloth)
     return unused_clothes
+
+
+def get_unavailable_clothes(db: Session, authorization: str):
+    user = get_user_id(authorization)
+    return db.query(clothes_models.Cloth) \
+        .filter(clothes_models.Cloth.user == user) \
+        .filter(clothes_models.Cloth.status != "available") \
+        .all()
