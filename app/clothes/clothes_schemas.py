@@ -24,7 +24,6 @@ class Cloth(ClothBase):
     created_at: datetime.date
     category: Category
     last_used: datetime.date | None
-    status: str = "available"
 
     class Config:
         orm_mode = True

@@ -15,7 +15,10 @@ def get_user_id(authorization: str) -> str:
 
 def get_clothes(db: Session, authorization: str):
     user = get_user_id(authorization)
-    return db.query(clothes_models.Cloth).filter(clothes_models.Cloth.user == user).all()
+    return db.query(clothes_models.Cloth) \
+        .filter(clothes_models.Cloth.user == user) \
+        .filter(clothes_models.Cloth.status == "available") \
+        .all()
 
 
 def get_cloth(cloth_id: int, db: Session, authorization: str):
@@ -23,6 +26,7 @@ def get_cloth(cloth_id: int, db: Session, authorization: str):
     return db.query(clothes_models.Cloth) \
         .filter(clothes_models.Cloth.id == cloth_id) \
         .filter(clothes_models.Cloth.user == user) \
+        .filter(clothes_models.Cloth.status == "available") \
         .first()
 
 
@@ -30,6 +34,7 @@ def create_cloth(db: Session, cloth: clothes_schemas.ClothCreate, authorization:
     user = get_user_id(authorization)
     db_cloth = clothes_models.Cloth(**cloth.dict(),
                                     user=user,
+                                    status="available",
                                     created_at=datetime.date.today())
     db.add(db_cloth)
     db.commit()
