@@ -51,14 +51,16 @@ def add_use(db: Session, use: clothes_schemas.UseCreate):
     db.commit()
 
 
-def delete_cloth(db: Session, cloth_id: int, authorization: str):
+def delete_cloth(db: Session, cloth_id: int, authorization: str, status: str):
     user = get_user_id(authorization)
     cloth = db.query(clothes_models.Cloth) \
-        .filter(clothes_models.Cloth.id == cloth_id and clothes_models.Cloth.user == user) \
+        .filter(clothes_models.Cloth.id == cloth_id) \
+        .filter(clothes_models.Cloth.user == user) \
         .first()
     if not cloth:
         raise HTTPException(status_code=404, detail="Cloth not found!")
-    db.delete(cloth)
+    cloth.status = status
+    db.add(cloth)
     db.commit()
 
 

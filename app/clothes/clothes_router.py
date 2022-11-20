@@ -20,10 +20,16 @@ async def create_cloth(cloth: clothes_schemas.ClothCreate,
     return {"too_much": clothes_service.create_cloth(db, cloth, bearer)}
 
 
-@router.delete("/{cloth_id}",
+@router.delete("/sell/{cloth_id}",
                tags=TAGS)
-async def delete_cloth(cloth_id: int, db: Session = Depends(get_db), bearer: str = Header()):
-    clothes_service.delete_cloth(db, cloth_id, bearer)
+async def sell_cloth(cloth_id: int, db: Session = Depends(get_db), bearer: str = Header()):
+    clothes_service.delete_cloth(db, cloth_id, bearer, "sold")
+
+
+@router.delete("/throw/{cloth_id}",
+               tags=TAGS)
+async def sell_cloth(cloth_id: int, db: Session = Depends(get_db), bearer: str = Header()):
+    clothes_service.delete_cloth(db, cloth_id, bearer, "thrown")
 
 
 @router.get("",
