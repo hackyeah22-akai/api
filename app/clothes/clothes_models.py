@@ -18,6 +18,7 @@ class Cloth(Base):
     is_summer = Column(Boolean, nullable=False)
     is_autumn = Column(Boolean, nullable=False)
     last_used = Column(Date, nullable=True)
+    status = Column(String, nullable=False)
     category = relationship("Category")
 
 
