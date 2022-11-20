@@ -23,7 +23,7 @@ async def create_cloth(cloth: clothes_schemas.ClothCreate,
 @router.delete("/{cloth_id}",
                tags=TAGS)
 async def delete_cloth(cloth_id: int, db: Session = Depends(get_db), bearer: str = Header()):
-    return clothes_service.delete_cloth(db, cloth_id, bearer)
+    clothes_service.delete_cloth(db, cloth_id, bearer)
 
 
 @router.get("",

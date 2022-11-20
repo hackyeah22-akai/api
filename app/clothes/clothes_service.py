@@ -21,7 +21,8 @@ def get_clothes(db: Session, authorization: str):
 def get_cloth(cloth_id: int, db: Session, authorization: str):
     user = get_user_id(authorization)
     return db.query(clothes_models.Cloth) \
-        .filter(clothes_models.Cloth.id == cloth_id and clothes_models.Cloth.user == user) \
+        .filter(clothes_models.Cloth.id == cloth_id) \
+        .filter(clothes_models.Cloth.user == user) \
         .first()
 
 
@@ -35,7 +36,8 @@ def create_cloth(db: Session, cloth: clothes_schemas.ClothCreate, authorization:
     db.refresh(db_cloth)
     max_items = db_cloth.category.max_items
     items_in_category = db.query(clothes_models.Cloth).filter(
-        clothes_models.Cloth.category_id == cloth.category_id and clothes_models.Cloth.user == user).all()
+        clothes_models.Cloth.category_id == cloth.category_id).filter(
+        clothes_models.Cloth.user == user).all()
     return len(items_in_category) > max_items
 
 
@@ -58,8 +60,6 @@ def delete_cloth(db: Session, cloth_id: int, authorization: str):
         raise HTTPException(status_code=404, detail="Cloth not found!")
     db.delete(cloth)
     db.commit()
-    # TODO: Return how much resourses you did save,
-    return {}
 
 
 def get_unused_clothes(db: Session, authorization: str):
