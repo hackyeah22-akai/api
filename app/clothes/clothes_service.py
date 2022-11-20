@@ -1,5 +1,6 @@
 import datetime
 
+from fastapi import HTTPException
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
@@ -12,11 +13,15 @@ def get_clothes(db: Session):
 
 
 def get_cloth(cloth_id: int, db: Session):
-    return db.query(clothes_models.Cloth).filter(clothes_models.Cloth.id == cloth_id).first()
+    return db.query(clothes_models.Cloth) \
+             .filter(clothes_models.Cloth.id == cloth_id) \
+             .first()
 
 
 def create_cloth(db: Session, cloth: clothes_schemas.ClothCreate):
-    db_cloth = clothes_models.Cloth(**cloth.dict(), user="test@test.com", created_at=datetime.date.today())
+    db_cloth = clothes_models.Cloth(**cloth.dict(),
+                                    user="test@test.com",
+                                    created_at=datetime.date.today())
     db.add(db_cloth)
     db.commit()
     db.refresh(db_cloth)
@@ -32,6 +37,18 @@ def add_use(db: Session, use: clothes_schemas.UseCreate):
     db.commit()
     db.refresh(db_use)
     return db_use
+
+
+def delete_cloth(db: Session, cloth_id: int):
+    cloth = db.query(clothes_models.Cloth) \
+              .filter(clothes_models.Cloth.id == cloth_id) \
+              .first()
+    if not cloth:
+        raise HTTPException(status_code=404, detail="Cloth not found!")
+    db.delete(cloth)
+    db.commit()
+    # TODO: Return how much resourses you did save,
+    return {}
 
 
 def get_unused_clothes(db: Session):
@@ -53,4 +70,6 @@ def get_unused_clothes(db: Session):
             seasons.append(3)
         if is_used(last_used, seasons):
             cloth_ids.append(cloth_id)
-    return db.query(clothes_models.Cloth).filter(~clothes_models.Cloth.id.in_(cloth_ids)).all()
+    return db.query(clothes_models.Cloth) \
+             .filter(~clothes_models.Cloth.id.in_(cloth_ids)) \
+             .all()

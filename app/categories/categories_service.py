@@ -8,7 +8,9 @@ def get_categories(db: Session):
 
 
 def get_category(category_id: int, db: Session):
-    return db.query(categories_models.Category).filter(categories_models.Category.id == category_id).first()
+    return db.query(categories_models.Category) \
+             .filter(categories_models.Category.id == category_id) \
+             .first()
 
 
 def create_category(db: Session, category: categories_schemas.CategoryCreate):

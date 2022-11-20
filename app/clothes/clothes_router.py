@@ -1,13 +1,13 @@
 from botocore.client import BaseClient
-from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi import File, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
 from app.config import get_db
-from . import clothes_schemas, clothes_service
+
 from ..config import s3_auth
 from ..s3.upload import upload_file_to_bucket
+from . import clothes_schemas, clothes_service
 
 router = APIRouter(prefix="/clothes")
 
@@ -18,6 +18,12 @@ TAGS = ['Clothes']
 async def create_cloth(cloth: clothes_schemas.ClothCreate,
                        db: Session = Depends(get_db)):
     return {"too_much": clothes_service.create_cloth(db, cloth)}
+
+
+@router.delete("/{cloth_id}",
+               tags=TAGS)
+async def delete_cloth(cloth_id: int, db: Session = Depends(get_db)):
+    return clothes_service.delete_cloth(db, cloth_id)
 
 
 @router.get("",
@@ -50,8 +56,11 @@ async def add_cloth_use(cloth_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/images", status_code=status.HTTP_201_CREATED, tags=TAGS)
-async def upload_file(s3: BaseClient = Depends(s3_auth), file_obj: UploadFile = File(...)):
-    upload_obj = upload_file_to_bucket(s3_client=s3, file_obj=file_obj.file, object_name=file_obj.filename)
+async def upload_file(s3: BaseClient = Depends(s3_auth),
+                      file_obj: UploadFile = File(...)):
+    upload_obj = upload_file_to_bucket(s3_client=s3,
+                                       file_obj=file_obj.file,
+                                       object_name=file_obj.filename)
 
     if upload_obj != '':
         return JSONResponse(content={'url': upload_obj},
