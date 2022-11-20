@@ -23,6 +23,7 @@ class Cloth(ClothBase):
     user: str
     created_at: datetime.date
     category: Category
+    last_used: datetime.date
 
     class Config:
         orm_mode = True

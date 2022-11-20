@@ -14,14 +14,15 @@ def get_clothes(db: Session):
 
 def get_cloth(cloth_id: int, db: Session):
     return db.query(clothes_models.Cloth) \
-             .filter(clothes_models.Cloth.id == cloth_id) \
-             .first()
+        .filter(clothes_models.Cloth.id == cloth_id) \
+        .first()
 
 
 def create_cloth(db: Session, cloth: clothes_schemas.ClothCreate):
     db_cloth = clothes_models.Cloth(**cloth.dict(),
                                     user="test@test.com",
-                                    created_at=datetime.date.today())
+                                    created_at=datetime.date.today(),
+                                    last_used=datetime.date.today())
     db.add(db_cloth)
     db.commit()
     db.refresh(db_cloth)
@@ -36,13 +37,15 @@ def add_use(db: Session, use: clothes_schemas.UseCreate):
     db.add(db_use)
     db.commit()
     db.refresh(db_use)
-    return db_use
+    db_use.cloth.last_used = db_use.date
+    db.add(db_use.cloth)
+    db.commit()
 
 
 def delete_cloth(db: Session, cloth_id: int):
     cloth = db.query(clothes_models.Cloth) \
-              .filter(clothes_models.Cloth.id == cloth_id) \
-              .first()
+        .filter(clothes_models.Cloth.id == cloth_id) \
+        .first()
     if not cloth:
         raise HTTPException(status_code=404, detail="Cloth not found!")
     db.delete(cloth)
@@ -53,23 +56,20 @@ def delete_cloth(db: Session, cloth_id: int):
 
 def get_unused_clothes(db: Session):
     sql = text(
-        """select c.id, coalesce(u.date, c.created_at) as last_used, c.is_spring, c.is_summer, c.is_autumn, c.is_winter from clothes c left join uses u on c.id = u.cloth_id""")
-    cloth_ids = []
+        """select c.id, c.last_used, c.is_spring, c.is_summer, c.is_autumn, c.is_winter from clothes c""")
+    unused_clothes = []
     result = db.execute(sql)
-    for row in result:
-        cloth_id = row.id
-        last_used = row.last_used
+    clothes = get_clothes(db)
+    for cloth in clothes:
         seasons = []
-        if row.is_spring:
+        if cloth.is_spring:
             seasons.append(0)
-        if row.is_summer:
+        if cloth.is_summer:
             seasons.append(1)
-        if row.is_autumn:
+        if cloth.is_autumn:
             seasons.append(2)
-        if row.is_winter:
+        if cloth.is_winter:
             seasons.append(3)
-        if is_used(last_used, seasons):
-            cloth_ids.append(cloth_id)
-    return db.query(clothes_models.Cloth) \
-             .filter(~clothes_models.Cloth.id.in_(cloth_ids)) \
-             .all()
+        if not is_used(cloth.last_used, seasons):
+            unused_clothes.append(cloth)
+    return unused_clothes
