@@ -7,26 +7,35 @@ from . import clothes_models, clothes_schemas
 from .utilities import is_used
 
 
-def get_clothes(db: Session):
-    return db.query(clothes_models.Cloth).all()
+def get_user_id(authorization: str) -> str:
+    if authorization.startswith("Bearer "):
+        authorization = authorization.replace("Bearer ", "", 1)
+    return authorization
 
 
-def get_cloth(cloth_id: int, db: Session):
+def get_clothes(db: Session, authorization: str):
+    user = get_user_id(authorization)
+    return db.query(clothes_models.Cloth).filter(clothes_models.Cloth.user == user).all()
+
+
+def get_cloth(cloth_id: int, db: Session, authorization: str):
+    user = get_user_id(authorization)
     return db.query(clothes_models.Cloth) \
-        .filter(clothes_models.Cloth.id == cloth_id) \
+        .filter(clothes_models.Cloth.id == cloth_id and clothes_models.Cloth.user == user) \
         .first()
 
 
-def create_cloth(db: Session, cloth: clothes_schemas.ClothCreate):
+def create_cloth(db: Session, cloth: clothes_schemas.ClothCreate, authorization: str):
+    user = get_user_id(authorization)
     db_cloth = clothes_models.Cloth(**cloth.dict(),
-                                    user="test@test.com",
+                                    user=user,
                                     created_at=datetime.date.today())
     db.add(db_cloth)
     db.commit()
     db.refresh(db_cloth)
     max_items = db_cloth.category.max_items
     items_in_category = db.query(clothes_models.Cloth).filter(
-        clothes_models.Cloth.category_id == cloth.category_id).all()
+        clothes_models.Cloth.category_id == cloth.category_id and clothes_models.Cloth.user == user).all()
     return len(items_in_category) > max_items
 
 
@@ -40,9 +49,10 @@ def add_use(db: Session, use: clothes_schemas.UseCreate):
     db.commit()
 
 
-def delete_cloth(db: Session, cloth_id: int):
+def delete_cloth(db: Session, cloth_id: int, authorization: str):
+    user = get_user_id(authorization)
     cloth = db.query(clothes_models.Cloth) \
-        .filter(clothes_models.Cloth.id == cloth_id) \
+        .filter(clothes_models.Cloth.id == cloth_id and clothes_models.Cloth.user == user) \
         .first()
     if not cloth:
         raise HTTPException(status_code=404, detail="Cloth not found!")
@@ -52,9 +62,9 @@ def delete_cloth(db: Session, cloth_id: int):
     return {}
 
 
-def get_unused_clothes(db: Session):
+def get_unused_clothes(db: Session, authorization: str):
     unused_clothes = []
-    clothes = get_clothes(db)
+    clothes = get_clothes(db, authorization)
     for cloth in clothes:
         seasons = []
         if cloth.is_spring:

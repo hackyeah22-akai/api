@@ -15,36 +15,36 @@ TAGS = ['Clothes']
 
 @router.post("", tags=TAGS)
 async def create_cloth(cloth: clothes_schemas.ClothCreate,
-                       db: Session = Depends(get_db)):
-    return {"too_much": clothes_service.create_cloth(db, cloth)}
+                       db: Session = Depends(get_db),
+                       bearer: str = Header()):
+    return {"too_much": clothes_service.create_cloth(db, cloth, bearer)}
 
 
 @router.delete("/{cloth_id}",
                tags=TAGS)
-async def delete_cloth(cloth_id: int, db: Session = Depends(get_db)):
-    return clothes_service.delete_cloth(db, cloth_id)
+async def delete_cloth(cloth_id: int, db: Session = Depends(get_db), bearer: str = Header()):
+    return clothes_service.delete_cloth(db, cloth_id, bearer)
 
 
 @router.get("",
             response_model=list[clothes_schemas.Cloth],
             tags=TAGS)
-async def read_clothes(db: Session = Depends(get_db), authorization: str = Header()):
-    print(authorization)
-    return clothes_service.get_clothes(db)
+async def read_clothes(db: Session = Depends(get_db), bearer: str = Header()):
+    return clothes_service.get_clothes(db, bearer)
 
 
 @router.get("/unused",
             response_model=list,
             tags=TAGS)
-async def get_unused_clothes(db: Session = Depends(get_db)):
-    return clothes_service.get_unused_clothes(db)
+async def get_unused_clothes(db: Session = Depends(get_db), bearer: str = Header()):
+    return clothes_service.get_unused_clothes(db, bearer)
 
 
 @router.get("/{cloth_id}",
             response_model=clothes_schemas.Cloth,
             tags=TAGS)
-async def read_cloth(cloth_id: int, db: Session = Depends(get_db)):
-    return clothes_service.get_cloth(cloth_id, db)
+async def read_cloth(cloth_id: int, db: Session = Depends(get_db), bearer: str = Header()):
+    return clothes_service.get_cloth(cloth_id, db, bearer)
 
 
 @router.post("/use/{cloth_id}",

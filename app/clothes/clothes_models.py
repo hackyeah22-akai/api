@@ -8,7 +8,7 @@ class Cloth(Base):
     __tablename__ = "clothes"
 
     id = Column(Integer, primary_key=True, index=True)
-    user = Column(String, ForeignKey("users.email"), nullable=False)
+    user = Column(String, nullable=False)
     category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)
     name = Column(String, nullable=False)
     photo = Column(String, nullable=False)
