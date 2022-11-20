@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 class CategoryBase(BaseModel):
     name: str
-    savings: str
+    savings: int
     max_items: int
 
 
