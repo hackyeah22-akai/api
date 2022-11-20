@@ -9,6 +9,7 @@ router = APIRouter(prefix="/category")
 
 TAGS = ['Categories']
 
+
 @router.post("",
              response_model=categories_schemas.Category,
              tags=TAGS)
