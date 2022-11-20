@@ -1,13 +1,12 @@
 from botocore.client import BaseClient
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status, Header
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
 from app.config import get_db
-
+from . import clothes_schemas, clothes_service
 from ..config import s3_auth
 from ..s3.upload import upload_file_to_bucket
-from . import clothes_schemas, clothes_service
 
 router = APIRouter(prefix="/clothes")
 
@@ -29,7 +28,8 @@ async def delete_cloth(cloth_id: int, db: Session = Depends(get_db)):
 @router.get("",
             response_model=list[clothes_schemas.Cloth],
             tags=TAGS)
-async def read_clothes(db: Session = Depends(get_db)):
+async def read_clothes(db: Session = Depends(get_db), authorization: str = Header()):
+    print(authorization)
     return clothes_service.get_clothes(db)
 
 
