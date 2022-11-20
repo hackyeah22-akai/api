@@ -4,6 +4,7 @@ from pydantic import BaseModel
 class CategoryBase(BaseModel):
     name: str
     savings: str
+    max_items: int
 
 
 class CategoryCreate(CategoryBase):

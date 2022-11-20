@@ -14,12 +14,10 @@ router = APIRouter(prefix="/clothes")
 TAGS = ['Clothes']
 
 
-@router.post("",
-             response_model=clothes_schemas.Cloth,
-             tags=TAGS)
+@router.post("", tags=TAGS)
 async def create_cloth(cloth: clothes_schemas.ClothCreate,
                        db: Session = Depends(get_db)):
-    return clothes_service.create_cloth(db, cloth)
+    return {"too_much": clothes_service.create_cloth(db, cloth)}
 
 
 @router.get("",

@@ -20,7 +20,10 @@ def create_cloth(db: Session, cloth: clothes_schemas.ClothCreate):
     db.add(db_cloth)
     db.commit()
     db.refresh(db_cloth)
-    return db_cloth
+    max_items = db_cloth.category.max_items
+    items_in_category = db.query(clothes_models.Cloth).filter(
+        clothes_models.Cloth.category_id == cloth.category_id).all()
+    return len(items_in_category) > max_items
 
 
 def add_use(db: Session, use: clothes_schemas.UseCreate):
