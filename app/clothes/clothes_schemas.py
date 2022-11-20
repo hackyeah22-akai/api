@@ -23,7 +23,7 @@ class Cloth(ClothBase):
     user: str
     created_at: datetime.date
     category: Category
-    last_used: datetime.date
+    last_used: datetime.date | None
 
     class Config:
         orm_mode = True

@@ -1,7 +1,6 @@
 import datetime
 
 from fastapi import HTTPException
-from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from . import clothes_models, clothes_schemas
@@ -21,8 +20,7 @@ def get_cloth(cloth_id: int, db: Session):
 def create_cloth(db: Session, cloth: clothes_schemas.ClothCreate):
     db_cloth = clothes_models.Cloth(**cloth.dict(),
                                     user="test@test.com",
-                                    created_at=datetime.date.today(),
-                                    last_used=datetime.date.today())
+                                    created_at=datetime.date.today())
     db.add(db_cloth)
     db.commit()
     db.refresh(db_cloth)
@@ -55,10 +53,7 @@ def delete_cloth(db: Session, cloth_id: int):
 
 
 def get_unused_clothes(db: Session):
-    sql = text(
-        """select c.id, c.last_used, c.is_spring, c.is_summer, c.is_autumn, c.is_winter from clothes c""")
     unused_clothes = []
-    result = db.execute(sql)
     clothes = get_clothes(db)
     for cloth in clothes:
         seasons = []
@@ -70,6 +65,6 @@ def get_unused_clothes(db: Session):
             seasons.append(2)
         if cloth.is_winter:
             seasons.append(3)
-        if not is_used(cloth.last_used, seasons):
+        if not is_used(cloth.last_used if cloth.last_used is not None else cloth.created_at, seasons):
             unused_clothes.append(cloth)
     return unused_clothes
