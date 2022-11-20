@@ -12,6 +12,8 @@ load_dotenv('.env')
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET = os.environ.get('AWS_SECRET')
 DATABASE_URL = os.environ.get('DATABASE_URL')
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 engine = create_engine(DATABASE_URL)
 
