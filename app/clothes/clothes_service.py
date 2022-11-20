@@ -15,19 +15,23 @@ def get_user_id(authorization: str) -> str:
 
 def get_clothes(db: Session, authorization: str):
     user = get_user_id(authorization)
-    return db.query(clothes_models.Cloth) \
+    clothes = db.query(clothes_models.Cloth) \
         .filter(clothes_models.Cloth.user == user) \
         .filter(clothes_models.Cloth.status == "available") \
         .all()
+    for cloth in clothes:
+        cloth.is_used = is_cloth_used(cloth)
+    return clothes
 
 
 def get_cloth(cloth_id: int, db: Session, authorization: str):
     user = get_user_id(authorization)
-    return db.query(clothes_models.Cloth) \
+    cloth = db.query(clothes_models.Cloth) \
         .filter(clothes_models.Cloth.id == cloth_id) \
         .filter(clothes_models.Cloth.user == user) \
         .filter(clothes_models.Cloth.status == "available") \
         .first()
+    cloth.is_used = is_cloth_used(cloth)
 
 
 def create_cloth(db: Session, cloth: clothes_schemas.ClothCreate, authorization: str):
@@ -70,26 +74,34 @@ def delete_cloth(db: Session, cloth_id: int, authorization: str, status: str):
 
 
 def get_unused_clothes(db: Session, authorization: str):
-    unused_clothes = []
     clothes = get_clothes(db, authorization)
+    unused_clothes = []
     for cloth in clothes:
-        seasons = []
-        if cloth.is_spring:
-            seasons.append(0)
-        if cloth.is_summer:
-            seasons.append(1)
-        if cloth.is_autumn:
-            seasons.append(2)
-        if cloth.is_winter:
-            seasons.append(3)
-        if not is_used(cloth.last_used if cloth.last_used is not None else cloth.created_at, seasons):
+        if not is_cloth_used(cloth):
             unused_clothes.append(cloth)
+            cloth.is_used = False
     return unused_clothes
 
 
 def get_unavailable_clothes(db: Session, authorization: str):
     user = get_user_id(authorization)
-    return db.query(clothes_models.Cloth) \
+    clothes = db.query(clothes_models.Cloth) \
         .filter(clothes_models.Cloth.user == user) \
         .filter(clothes_models.Cloth.status != "available") \
         .all()
+    for cloth in clothes:
+        cloth.is_used = is_cloth_used(cloth)
+    return clothes
+
+
+def is_cloth_used(cloth: clothes_models.Cloth):
+    seasons = []
+    if cloth.is_spring:
+        seasons.append(0)
+    if cloth.is_summer:
+        seasons.append(1)
+    if cloth.is_autumn:
+        seasons.append(2)
+    if cloth.is_winter:
+        seasons.append(3)
+    return is_used(cloth.last_used if cloth.last_used is not None else cloth.created_at, seasons)

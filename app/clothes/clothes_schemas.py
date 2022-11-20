@@ -25,6 +25,7 @@ class Cloth(ClothBase):
     category: Category
     last_used: datetime.date | None
     status: str
+    is_used: bool | None
 
     class Config:
         orm_mode = True
