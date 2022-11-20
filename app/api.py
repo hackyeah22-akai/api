@@ -11,3 +11,8 @@ app = FastAPI()
 app.include_router(clothes_router.router, prefix="/api/v1")
 app.include_router(categories_router.router, prefix="/api/v1")
 app.include_router(users_router.router, prefix="/api/v1")
+
+
+@app.get("/health")
+async def health():
+    return {"health": "OK"}
